@@ -4,52 +4,141 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ตัวช่วยสร้าง Prompt AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+      :root {
+        --primary-color: #4caf50;
+        --background-light: #f4f4f4;
+        --background-dark: #333;
+        --text-light: #333;
+        --text-dark: #f4f4f4;
+      }
       body {
-        font-family: Arial, sans-serif;
+        font-family: 'Prompt', sans-serif;
         line-height: 1.6;
         margin: 0;
         padding: 20px;
-        background-color: #f4f4f4;
+        transition: background-color 0.3s, color 0.3s;
+      }
+      body.light-mode {
+        background-color: var(--background-light);
+        color: var(--text-light);
+      }
+      body.dark-mode {
+        background-color: var(--background-dark);
+        color: var(--text-dark);
       }
       .container {
         max-width: 800px;
         margin: auto;
         background: white;
         padding: 20px;
-        border-radius: 5px;
+        border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, box-shadow 0.3s;
+      }
+      body.dark-mode .container {
+        background: #444;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
       }
       h1 {
-        color: #333;
+        color: var(--primary-color);
         text-align: center;
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+      .mode-toggle {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .mode-toggle label {
+        margin-right: 10px;
+      }
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+      }
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+      input:checked + .slider {
+        background-color: var(--primary-color);
+      }
+      input:checked + .slider:before {
+        transform: translateX(26px);
       }
       label {
         display: block;
         margin-top: 10px;
+        margin-bottom: 5px;
+        font-weight: 500;
       }
       input[type="text"],
-      textarea {
+      textarea,
+      select {
         width: 100%;
         padding: 8px;
-        margin-top: 5px;
+        margin-bottom: 10px;
         border: 1px solid #ddd;
         border-radius: 4px;
         box-sizing: border-box;
+        background-color: white;
+        color: black;
+        font-family: 'Prompt', sans-serif;
+      }
+      body.dark-mode input[type="text"],
+      body.dark-mode textarea,
+      body.dark-mode select {
+        background-color: #555;
+        color: white;
+        border-color: #777;
       }
       textarea {
         height: 100px;
+        resize: vertical;
       }
       button {
         display: block;
         width: 100%;
         padding: 10px;
-        background-color: #4caf50;
+        background-color: var(--primary-color);
         color: white;
         border: none;
         border-radius: 4px;
         cursor: pointer;
         margin-top: 20px;
+        font-size: 16px;
+        transition: background-color 0.3s;
+        font-family: 'Prompt', sans-serif;
+        font-weight: 500;
       }
       button:hover {
         background-color: #45a049;
@@ -61,19 +150,30 @@
         border-radius: 4px;
         background-color: #f9f9f9;
         white-space: pre-wrap;
+        font-family: 'Prompt', sans-serif;
+        font-weight: 300;
+      }
+      body.dark-mode #result {
+        background-color: #555;
+        border-color: #777;
       }
       #copyButton {
-        margin-top: 10px;
-        background-color: #008CBA;
+        background-color: #008cba;
       }
       #copyButton:hover {
-        background-color: #007B9A;
+        background-color: #007b9a;
       }
     </style>
   </head>
-  <body>
+  <body class="dark-mode">
     <div class="container">
       <h1>ตัวช่วยสร้าง Prompt AI</h1>
+      <div class="mode-toggle">
+        <label class="switch">
+          <input type="checkbox" id="modeToggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
       <form id="promptForm">
         <label for="topic">หัวข้อ:</label>
         <input
@@ -82,54 +182,83 @@
           value="รวม 30 ศัพท์ ที่คนทำ Front-end ต้องรู้"
           required
         />
+
         <label for="format">รูปแบบ:</label>
-        <input type="text" id="format" value="Album" required />
+        <select id="format" required>
+          <option value="Album">Album</option>
+          <option value="Article">Article</option>
+          <option value="List">List</option>
+        </select>
+
         <label for="content">เนื้อหา:</label>
         <textarea id="content" required>* HTML CSS JS React</textarea>
+
         <label for="style">สไตล์:</label>
         <input type="text" id="style" value="BorntoDev" />
+
         <label for="tone">โทนเสียง:</label>
-        <input type="text" id="tone" value="เป็นกันเอง" />
+        <select id="tone">
+          <option value="เป็นกันเอง">เป็นกันเอง</option>
+          <option value="มืออาชีพ">มืออาชีพ</option>
+          <option value="ไม่เป็นทางการ">ไม่เป็นทางการ</option>
+        </select>
+
         <label for="details">รายละเอียดเพิ่มเติม:</label>
         <textarea id="details">
 ในแต่ละย่อหน้าจะไม่ทำเป็นข้อ ๆ จะเขียนเป็นแนวบรรยาย</textarea
         >
+
         <button type="submit">สร้าง Prompt</button>
       </form>
       <div id="result"></div>
-      <button id="copyButton">คัดลอก Prompt</button>
+      <button id="copyButton" style="display: none">คัดลอก Prompt</button>
     </div>
-    <script>
-      document
-        .getElementById("promptForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const topic = document.getElementById("topic").value;
-          const format = document.getElementById("format").value;
-          const content = document.getElementById("content").value;
-          const style = document.getElementById("style").value;
-          const tone = document.getElementById("tone").value;
-          const details = document.getElementById("details").value;
-          let prompt = `เขียนคอนเทนต์ รูปแบบ ${format} เริ่มจากเปิดด้วย 1 ประโยคเด็ดที่น่าสนใจ ทุกย่อหน้าต้องเริ่มต้นด้วย emoji\n\n`;
-          prompt += `**หัวข้อ:** ${topic}\n`;
-          prompt += `**รูปแบบ:** ${format}\n`;
-          prompt += `**เนื้อหา:**\n`;
-          prompt += `* ${content}\n`;
-          if (style) prompt += `* สไตล์: ${style}\n`;
-          if (tone) prompt += `* โทนเสียง: ${tone}\n`;
-          if (details) prompt += `* ${details}\n`;
-          prompt += `จบโพสต์บรรทัดสุดท้ายด้วยคำว่า "🦖 #borntoDev - พร้อมเปลี่ยนคนทำงาน ให้ก้าวสู่การเป็น Dev / Tech Expert" เท่านั้น`;
-          document.getElementById("result").textContent = prompt;
-        });
 
-      document.getElementById("copyButton").addEventListener("click", function() {
-        const result = document.getElementById("result");
+    <script>
+      const modeToggle = document.getElementById("modeToggle");
+      const body = document.body;
+      const form = document.getElementById("promptForm");
+      const result = document.getElementById("result");
+      const copyButton = document.getElementById("copyButton");
+
+      modeToggle.addEventListener("change", () => {
+        body.classList.toggle("dark-mode");
+        body.classList.toggle("light-mode");
+      });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const topic = document.getElementById("topic").value;
+        const format = document.getElementById("format").value;
+        const content = document.getElementById("content").value;
+        const style = document.getElementById("style").value;
+        const tone = document.getElementById("tone").value;
+        const details = document.getElementById("details").value;
+
+        let prompt = `เขียนคอนเทนต์ รูปแบบ ${format} เริ่มจากเปิดด้วย 1 ประโยคเด็ดที่น่าสนใจ ทุกย่อหน้าต้องเริ่มต้นด้วย emoji\n\n`;
+        prompt += `**หัวข้อ:** ${topic}\n`;
+        prompt += `**รูปแบบ:** ${format}\n`;
+        prompt += `**เนื้อหา:**\n`;
+        prompt += `* ${content}\n`;
+        if (style) prompt += `* สไตล์: ${style}\n`;
+        if (tone) prompt += `* โทนเสียง: ${tone}\n`;
+        if (details) prompt += `* ${details}\n`;
+        prompt += `จบโพสต์บรรทัดสุดท้ายด้วยคำว่า "🦖 #borntoDev - พร้อมเปลี่ยนคนทำงาน ให้ก้าวสู่การเป็น Dev / Tech Expert" เท่านั้น`;
+
+        result.textContent = prompt;
+        copyButton.style.display = "block";
+      });
+
+      copyButton.addEventListener("click", function () {
         const text = result.textContent;
-        navigator.clipboard.writeText(text).then(function() {
-          alert("คัดลอก Prompt สำเร็จ!");
-        }, function(err) {
-          console.error('ไม่สามารถคัดลอกข้อความได้: ', err);
-        });
+        navigator.clipboard.writeText(text).then(
+          function () {
+            alert("คัดลอก Prompt สำเร็จ!");
+          },
+          function (err) {
+            console.error("ไม่สามารถคัดลอกข้อความได้: ", err);
+          }
+        );
       });
     </script>
   </body>

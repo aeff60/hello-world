@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ตัวช่วยสร้าง Prompt AI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       :root {
         --primary-color: #4caf50;
@@ -14,7 +17,7 @@
         --text-dark: #f4f4f4;
       }
       body {
-        font-family: 'Prompt', sans-serif;
+        font-family: "Prompt", sans-serif;
         line-height: 1.6;
         margin: 0;
         padding: 20px;
@@ -112,7 +115,7 @@
         box-sizing: border-box;
         background-color: white;
         color: black;
-        font-family: 'Prompt', sans-serif;
+        font-family: "Prompt", sans-serif;
       }
       body.dark-mode input[type="text"],
       body.dark-mode textarea,
@@ -137,7 +140,7 @@
         margin-top: 20px;
         font-size: 16px;
         transition: background-color 0.3s;
-        font-family: 'Prompt', sans-serif;
+        font-family: "Prompt", sans-serif;
         font-weight: 500;
       }
       button:hover {
@@ -150,7 +153,7 @@
         border-radius: 4px;
         background-color: #f9f9f9;
         white-space: pre-wrap;
-        font-family: 'Prompt', sans-serif;
+        font-family: "Prompt", sans-serif;
         font-weight: 300;
       }
       body.dark-mode #result {
@@ -174,7 +177,7 @@
           <span class="slider"></span>
         </label>
       </div>
-      
+
       <!-- ปุ่มที่เพิ่มใหม่ -->
       <button id="briefButton">ลองบรีฟปก ALUBM</button>
 
@@ -189,13 +192,16 @@
 
         <label for="format">รูปแบบ:</label>
         <select id="format" required>
+          <option value="Facebook Post">Facebook Post</option>
+          <option value="Cheat Sheet">Cheat Sheet</option>
+          <option value="Script">สคริปต์วิดีโอ</option>
           <option value="Album">Album</option>
           <option value="Article">Article</option>
           <option value="List">List</option>
         </select>
 
         <label for="content">เนื้อหา:</label>
-        <textarea id="content" required>* HTML CSS JS React</textarea>
+        <textarea id="content" required> ตั้งชื่อจากเนื้อหาด้านล่าง </textarea>
 
         <label for="style">สไตล์:</label>
         <input type="text" id="style" value="BorntoDev" />
@@ -265,9 +271,11 @@
         );
       });
 
-            document.getElementById("briefButton").addEventListener("click", function() {
-        window.open("https://aeff60.github.io/bal/", "_blank");
-      });
+      document
+        .getElementById("briefButton")
+        .addEventListener("click", function () {
+          window.open("https://aeff60.github.io/bal/", "_blank");
+        });
     </script>
   </body>
 </html>
